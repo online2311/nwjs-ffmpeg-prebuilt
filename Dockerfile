@@ -9,19 +9,21 @@ WORKDIR /nwjs-ffmpeg-prebuilt
 RUN npm install && sudo npm build --arch arm64 -v 0.54.1 -p linux -o /nwjs-v0.54.1-linux-arm64.zip
 RUN npm install && sudo npm build --arch arm -v 0.54.1 -p linux -o /nwjs-v0.54.1-linux-arm.zip
 RUN npm install && sudo npm build --arch x64 -v 0.54.1 -p linux -o /nwjs-v0.54.1-linux-x64.zip
-## RUN npx nwjs-ffmpeg-prebuilt --arch arm64 -v 0.54.1 -p linux -o nwjs-arm64-v0.54.1.zip
+RUN npm install && sudo npm build --arch win -v 0.54.1 -p linux -o /nwjs-v0.54.1-win-x64.zip
 
 
 FROM alpine:latest
-COPY --from=builder /nwjs-arm64-v0.54.1.zip .
-COPY --from=builder /nwjs-arm-v0.54.1.zip .
-COPY --from=builder /nwjs-x64-v0.54.1.zip .
-RUN apk update && apk install file unzip && rm -rf /var/cache/apk/*
-
-RUN unzip -o /nwjs-arm64-v0.54.1.zip -d /data/nwjs-arm64-v0.54.1/ && file="$(file /data/nwjs-arm64-v0.54.1/libffmpeg.so)" && echo $file
-RUN unzip -o /nwjs-arm-v0.54.1.zip -d /data/nwjs-arm-v0.54.1/ && file="$(file /data/nwjs-arm-v0.54.1/libffmpeg.so)" && echo $file
-RUN unzip -o /nwjs-x64-v0.54.1.zip -d /data/nwjs-x64-v0.54.1/ && file="$(file /data/nwjs-x64-v0.54.1/libffmpeg.so)" && echo $file
-RUN rm -rf /nwjs-arm64-v0.54.1.zip && rm -rf /nwjs-arm-v0.54.1.zip && rm -rf /nwjs-x64-v0.54.1.zip
+COPY --from=builder /nwjs-v0.54.1-linux-arm64.zip .
+COPY --from=builder /nwjs-v0.54.1-linux-arm.zip .
+COPY --from=builder /nwjs-v0.54.1-linux-x64.zip .
+COPY --from=builder /nwjs-v0.54.1-win-x64.zip .
+RUN apk update && apk install file unzip
+RUN unzip -o /nwjs-v0.54.1-linux-arm64.zip -d /data/nwjs-v0.54.1-linux-arm64/ && file="$(file /data/nwjs-v0.54.1-linux-arm64/libffmpeg.so)" && echo $file
+RUN unzip -o /nwjs-v0.54.1-linux-arm.zip -d /data/nwjs-v0.54.1-linux-arm/ && file="$(file /data/nwjs-v0.54.1-linux-arm/libffmpeg.so)" && echo $file
+RUN unzip -o /nwjs-v0.54.1-linux-x64.zip -d /data/nwjs-v0.54.1-linux-x64/ && file="$(file /data/nwjs-v0.54.1-linux-x64/libffmpeg.so)" && echo $file
+RUN unzip -o /nwjs-v0.54.1-win-x64.zip -d /data/nwjs-v0.54.1-win-x64/ && file="$(file /data/nwjs-v0.54.1-win-x64/ffmpeg.dll)" && echo $file
+RUN rm /nwjs-v0.54.1-linux-arm64.zip /nwjs-v0.54.1-linux-arm.zip /nwjs-v0.54.1-linux-x64.zip /nwjs-v0.54.1-win-x64.zip
+RUN apk del file unzip && rm -rf /var/cache/apk/*
 
 VOLUME [ "/data" ]
 ENTRYPOINT ["/bin/bash"]
