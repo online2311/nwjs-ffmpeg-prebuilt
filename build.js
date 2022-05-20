@@ -120,11 +120,9 @@ solutions = [
     },
 ]
 ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
-${platform === 'ia32' ? 'target_cpu=["x86"]' : ''}
+${platform === 'arm64' ? 'target_cpu=["arm64"]' : ''}
 ${platform === 'x64' ? 'target_cpu=["x64"]' : ''}
-${platform === 'darwin' ? 'target_os=["mac"]' : ''}
-${platform === 'win32' || platform === 'win' ? 'target_os=["win"]' : ''}
-${platform === 'linux' ? 'target_os=["linux"]' : ''}
+${platform === 'ia32' ? 'target_cpu=["ia32"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
         await execAsync('git', 'clone', 'https://chromium.googlesource.com/chromium/src.git', '--branch', chromiumVersion, '--single-branch', '--depth', 1);
