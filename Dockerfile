@@ -14,9 +14,9 @@ RUN git config --global url."https://github.com/google/angle.git".insteadOf "htt
 RUN git config --global url."https://github.com/chromium/chromium.git".insteadOf "https://chromium.googlesource.com/chromium/src.git"
 
 RUN git clone https://github.com/online2311/nwjs-ffmpeg-prebuilt.git
-ENV PATH="$PATH:/home/chromium/build/depot_tools"
-RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 -v 0.54.1 -p linux
+RUN export PATH="$PATH:/home/chromium/build/depot_tools"
+RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 -v 0.54.1
 
 # FROM alpine:latest
-# COPY --from=builder /home/chromium/nwjs-ffmpeg-prebuilt/build/out/ .
+# COPY --from=builder /home/chromium/build/out/ .
 ENTRYPOINT ["/bin/bash"]
