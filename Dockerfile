@@ -1,5 +1,5 @@
 FROM debian:10.12 as builder
-RUN apt-get -y update && apt-get install -y build-essential curl git lsb-base lsb-release sudo apt-utils
+RUN apt-get -y update && apt-get install -y build-essential curl git lsb-base lsb-release sudo apt-utils python
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
 RUN curl -L https://raw.githubusercontent.com/chromium/chromium/main/build/install-build-deps.sh > /tmp/install-build-deps.sh && chmod +x /tmp/install-build-deps.sh && /tmp/install-build-deps.sh --no-prompt --no-arm --no-chromeos-fonts --no-nacl && rm /tmp/install-build-deps.sh
 
