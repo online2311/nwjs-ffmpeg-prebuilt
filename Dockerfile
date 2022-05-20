@@ -4,7 +4,8 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -
 RUN curl -L https://raw.githubusercontent.com/chromium/chromium/main/build/install-build-deps.sh > /tmp/install-build-deps.sh && chmod +x /tmp/install-build-deps.sh && /tmp/install-build-deps.sh --no-prompt --no-arm --no-chromeos-fonts --no-nacl && rm /tmp/install-build-deps.sh
 
 # Don't build as root.
-RUN useradd chrome --shell /bin/bash --create-home && usermod -aG sudo chrome
+RUN useradd chromium --shell /bin/bash --create-home && usermod -aG sudo chromium
+RUN echo "chromium ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER chromium
 ENV HOME /home/chromium
 WORKDIR /home/chromium
