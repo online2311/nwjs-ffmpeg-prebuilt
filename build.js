@@ -108,13 +108,14 @@ async function main() {
     if (!hasSrc) {
         const gclient = `
 solutions = [
-    { "name"        : 'src',
+    { 
+        "name"        : 'src',
         "url"         : 'https://chromium.googlesource.com/chromium/src.git',
         "deps_file"   : 'DEPS',
         "managed"     : False,
         "custom_deps" : {
         },
-        "custom_vars": { 
+        "custom_vars" : {
             "checkout_pgo_profiles": True, 
         }, 
     },
