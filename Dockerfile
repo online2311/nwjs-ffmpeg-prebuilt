@@ -11,16 +11,9 @@ ENV HOME /home/chromium
 WORKDIR /home/chromium
 
 RUN git clone https://github.com/online2311/nwjs-ffmpeg-prebuilt.git
-ENV PATH="$PATH:/home/chromium/depot_tools"
+ENV PATH="$PATH:/home/chromium/build/depot_tools"
 RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 -v 0.54.1 -p linux
-# RUN npx nwjs-ffmpeg-prebuilt --arch arm -v 0.54.1 -p linux
-# RUN npx nwjs-ffmpeg-prebuilt --arch x64 -v 0.54.1 -p linux 
-# RUN npx nwjs-ffmpeg-prebuilt --arch win -v 0.54.1 -p win32
-# RUN npx nwjs-ffmpeg-prebuilt --arch win -v 0.54.1 -p win64
-# RUN npx nwjs-ffmpeg-prebuilt --arch osx -v 0.54.1 -p osx
-
 
 # FROM alpine:latest
-# COPY --from=builder /nwjs-ffmpeg-prebuilt/build/out/ .
-# VOLUME [ "/data" ]
+# COPY --from=builder /home/chromium/nwjs-ffmpeg-prebuilt/build/out/ .
 ENTRYPOINT ["/bin/bash"]
