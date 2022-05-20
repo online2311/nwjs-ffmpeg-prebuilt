@@ -121,7 +121,6 @@ solutions = [
     },
 ]
 ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
-${platform === 'arm64' ? 'target_cpu=["arm64"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
         await execAsync('git', 'clone', 'https://chromium.googlesource.com/chromium/src.git', '--branch', chromiumVersion, '--single-branch', '--depth', 1);
