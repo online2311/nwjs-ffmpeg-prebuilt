@@ -6,7 +6,7 @@ RUN apt-get install -y nodejs gcc g++ make
 RUN curl -L https://raw.githubusercontent.com/chromium/chromium/main/build/install-build-deps.sh > /tmp/install-build-deps.sh && chmod +x /tmp/install-build-deps.sh && /tmp/install-build-deps.sh --no-prompt --no-arm --no-chromeos-fonts --no-nacl && rm /tmp/install-build-deps.sh
 
 # Don't build as root.
-RUN useradd -m chromium && adduser chromium sudo && usermod -aG sudo chromium
+RUN useradd chromium --shell /bin/bash --create-home && usermod -aG sudo chromium
 USER chromium
 ENV HOME /home/chromium
 WORKDIR /home/chromium
