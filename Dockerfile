@@ -5,8 +5,6 @@ RUN curl -L https://raw.githubusercontent.com/chromium/chromium/main/build/insta
 
 # Don't build as root.
 RUN useradd chrome --shell /bin/bash --create-home && usermod -aG sudo chrome
-RUN echo "chrome ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
 USER chromium
 ENV HOME /home/chromium
 WORKDIR /home/chromium
