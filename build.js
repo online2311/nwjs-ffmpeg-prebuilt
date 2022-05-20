@@ -70,7 +70,7 @@ async function main() {
         console.error('Platform not supported');
         process.exit(1);
     }
-    const downloadUrl = `https://github.com/nwjs-ffmpeg-prebuilt/nwjs-ffmpeg-prebuilt/releases/releases/download/${version.version.slice(1)}/${zipName}`;
+    const downloadUrl = `https://github.com/iteufel/nwjs-ffmpeg-prebuilt/releases/download/${version.version.slice(1)}/${zipName}`;
     if (program.getDownloadUrl) {
         process.stdout.write(downloadUrl);
         process.exit(0);
@@ -121,9 +121,6 @@ solutions = [
     },
 ]
 ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
-${platform === 'arm64' ? 'target_cpu=["arm64"]' : ''}
-${platform === 'x64' ? 'target_cpu=["x64"]' : ''}
-${platform === 'ia32' ? 'target_cpu=["ia32"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
         await execAsync('git', 'clone', 'https://chromium.googlesource.com/chromium/src.git', '--branch', chromiumVersion, '--single-branch', '--depth', 1);
@@ -136,7 +133,7 @@ ${platform === 'ia32' ? 'target_cpu=["ia32"]' : ''}
     await execAsync('git', 'reset', '--hard', `tags/${chromiumVersion}`);
 
     if (process.platform === 'linux') {
-        await setupLinux(program.arch === 'arm64');
+        await setupLinux(program.arch === 'arm');
     } else if (process.platform === 'darwin') {
         await setupMac();
     } else if (platform === 'win32' || platform === 'win') {
