@@ -1,6 +1,6 @@
 FROM debian:10.12 as builder
 RUN apt-get -y update && apt-get install -y build-essential curl git lsb-base lsb-release sudo apt-utils python
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs
 
 # Don't build as root.
 RUN useradd chromium --shell /bin/bash --create-home && usermod -aG sudo chromium
@@ -13,8 +13,9 @@ RUN git config --global url."https://github.com/google/angle.git".insteadOf "htt
 RUN git config --global url."https://github.com/chromium/chromium.git".insteadOf "https://chromium.googlesource.com/chromium/src.git"
 
 RUN git clone https://github.com/online2311/nwjs-ffmpeg-prebuilt.git
-RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 --version 0.54.1 --platform linux 
-
-FROM alpine:latest
-COPY --from=builder /home/chromium/build/out/ .
+ENV PATH="$PATH:/home/chromium/build/depot_tools"
+RUN npx -y nwjs-ffmpeg-prebuilt --version 0.54.1
+RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 --version 0.54.1
+# FROM alpine:latestrnv
+# COPY --from=builder /home/chromium/build/out/ .
 ENTRYPOINT ["/bin/bash"]
