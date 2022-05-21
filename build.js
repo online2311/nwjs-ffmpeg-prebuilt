@@ -70,7 +70,7 @@ async function main() {
         console.error('Platform not supported');
         process.exit(1);
     }
-    const downloadUrl = `https://github.com/nwjs-ffmpeg-prebuilt/nwjs-ffmpeg-prebuilt/releases/releases/download/${version.version.slice(1)}/${zipName}`;
+    const downloadUrl = `https://github.com/nwjs-ffmpeg-prebuilt/nwjs-ffmpeg-prebuilt/releases/download/${version.version.slice(1)}/${zipName}`;
     if (program.getDownloadUrl) {
         process.stdout.write(downloadUrl);
         process.exit(0);
@@ -107,19 +107,19 @@ async function main() {
     console.log(`Clone chromium.src`);
     if (!hasSrc) {
         const gclient = `
-solutions = [
-    { 
-        "name"        : 'src',
-        "url"         : 'https://chromium.googlesource.com/chromium/src.git',
-        "deps_file"   : 'DEPS',
-        "managed"     : False,
-        "custom_deps" : {
-        },
-        "custom_vars" : {
-            "checkout_pgo_profiles": True, 
-        }, 
-    },
-]
+        solutions = [
+            { 
+                "name"        : 'src',
+                "url"         : 'https://chromium.googlesource.com/chromium/src.git',
+                "deps_file"   : 'DEPS',
+                "managed"     : False,
+                "custom_deps" : {
+                },
+                "custom_vars" : {
+                    "checkout_pgo_profiles": True, 
+                }, 
+            },
+        ]
 ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
@@ -141,7 +141,7 @@ ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
     }
 
     await execAsync('gclient', 'sync', '--with_branch_heads');
-    if (program.arch === 'arm64') {
+    if (program.arch === 'ia32') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""');
     } else if (program.arch === 'x64') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""');
