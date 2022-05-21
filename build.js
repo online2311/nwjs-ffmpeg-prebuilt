@@ -45,6 +45,18 @@ async function setupMac() {
 async function setupWin() {
 }
 
+async function installsysroot() {
+    if (program.arch === 'ia32') {
+        await execAsync(`./build/linux/sysroot_scripts/install-sysroot.py`, `--arch=ia32`);
+    } else if (program.arch === 'x64') {
+        await execAsync(`./build/linux/sysroot_scripts/install-sysroot.py`, `--arch=x64`);
+    } else if (program.arch === 'arm') {
+        await execAsync(`./build/linux/sysroot_scripts/install-sysroot.py`, `--arch=arm`);
+    } else if (program.arch === 'arm64') {
+        await execAsync(`./build/linux/sysroot_scripts/install-sysroot.py`, `--arch=arm64`);
+    }
+}
+
 async function main() {
     const pkg = await got('https://nwjs.io/versions.json').json();
     const nwVersion = program.version || pkg['stable'];
@@ -107,19 +119,18 @@ async function main() {
     console.log(`Clone chromium.src`);
     if (!hasSrc) {
         const gclient = `
-        solutions = [
-            { 
-                "name"        : 'src',
-                "url"         : 'https://chromium.googlesource.com/chromium/src.git',
-                "deps_file"   : 'DEPS',
-                "managed"     : False,
-                "custom_deps" : {
-                },
-                "custom_vars" : {
-                    "checkout_pgo_profiles": True, 
-                }, 
-            },
-        ]
+solutions = [
+    { "name"        : 'src',
+        "url"         : 'https://chromium.googlesource.com/chromium/src.git',
+        "deps_file"   : 'DEPS',
+        "managed"     : False,
+        "custom_deps" : {
+        },
+        "custom_vars": {
+            "checkout_pgo_profiles": True, 
+        },
+    },
+]
 ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
@@ -134,6 +145,7 @@ ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
 
     if (process.platform === 'linux') {
         await setupLinux(program.arch === 'arm');
+        await installsysroot();
     } else if (process.platform === 'darwin') {
         await setupMac();
     } else if (platform === 'win32' || platform === 'win') {
