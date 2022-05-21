@@ -10,7 +10,7 @@ const {promisify} = require('util');
 const pipeline = promisify(stream.pipeline);
 
 program
-    .option('-a, --arch [arch]', 'Target architecture, ia32, x64, arm', 'x64')
+    .option('-a, --arch [arch]', 'Target architecture, ia32, x64, arm64', 'x64')
     .option('-v, --version [version]', 'Build FFmpeg for the specified NW.js version or Branch', false)
     .option('-c, --clean', 'Clean the workspace, removes downloaded source code')
     .option('-d, --download', 'Download Prebuild binaries.')
@@ -43,18 +43,6 @@ async function setupMac() {
 }
 
 async function setupWin() {
-}
-
-async function installsysroot() {
-    if (program.arch === 'ia32') {
-        await execAsync(`./src/build/linux/sysroot_scripts/install-sysroot.py`, `--arch=ia32`);
-    } else if (program.arch === 'x64') {
-        await execAsync(`./src/build/linux/sysroot_scripts/install-sysroot.py`, `--arch=x64`);
-    } else if (program.arch === 'arm') {
-        await execAsync(`./src/build/linux/sysroot_scripts/install-sysroot.py`, `--arch=arm`);
-    } else if (program.arch === 'arm64') {
-        await execAsync(`./src/build/linux/sysroot_scripts/install-sysroot.py`, `--arch=arm64`);
-    }
 }
 
 async function main() {
@@ -132,11 +120,10 @@ solutions = [
         },
     },
 ]
-${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
+${platform === 'arm64' ? 'target_cpu=["arm64"]' : ''}
         `.trim();
         await fs.writeFile('.gclient', gclient);
         await execAsync('git', 'clone', 'https://chromium.googlesource.com/chromium/src.git', '--branch', chromiumVersion, '--single-branch', '--depth', 1);
-        await execAsync('./src/build/linux/sysroot_scripts/install-sysroot.py', '--arch=arm');
     }
     process.chdir('./src');
     if (hasSrc) {
@@ -146,22 +133,18 @@ ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
     await execAsync('git', 'reset', '--hard', `tags/${chromiumVersion}`);
 
     if (process.platform === 'linux') {
-        await setupLinux(program.arch === 'arm');
+        await setupLinux(program.arch === 'arm64');
     } else if (process.platform === 'darwin') {
         await setupMac();
     } else if (platform === 'win32' || platform === 'win') {
         await setupWin();
     }
 
-    await installsysroot();
-
     await execAsync('gclient', 'sync', '--with_branch_heads');
     if (program.arch === 'ia32') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""');
     } else if (program.arch === 'x64') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""');
-    } else if (program.arch === 'arm') {
-        await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"arm\\" ffmpeg_branding=\\"Chrome\\""');
     } else if (program.arch === 'arm64') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"arm64\\" ffmpeg_branding=\\"Chrome\\""');
     }
