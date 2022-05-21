@@ -15,6 +15,7 @@ RUN git config --global url."https://github.com/chromium/chromium.git".insteadOf
 RUN git clone https://github.com/online2311/nwjs-ffmpeg-prebuilt.git
 ENV PATH="$PATH:/home/chromium/build/depot_tools"
 RUN npx -y nwjs-ffmpeg-prebuilt --version 0.54.1
+RUN python /home/chromium/build/chromium/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm64
 RUN npx -y nwjs-ffmpeg-prebuilt --arch arm64 --version 0.54.1
 # FROM alpine:latestrnv
 # COPY --from=builder /home/chromium/build/out/ .
