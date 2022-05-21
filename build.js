@@ -120,7 +120,8 @@ async function main() {
     if (!hasSrc) {
         const gclient = `
 solutions = [
-    { "name"        : 'src',
+    { 
+        "name"        : 'src',
         "url"         : 'https://chromium.googlesource.com/chromium/src.git',
         "deps_file"   : 'DEPS',
         "managed"     : False,
@@ -152,7 +153,7 @@ ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
     }
 
     await installsysroot();
-    
+
     await execAsync('gclient', 'sync', '--with_branch_heads');
     if (program.arch === 'ia32') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""');
