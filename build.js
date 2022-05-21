@@ -145,13 +145,14 @@ ${platform === 'arm' ? 'target_cpu=["arm"]' : ''}
 
     if (process.platform === 'linux') {
         await setupLinux(program.arch === 'arm');
-        await installsysroot();
     } else if (process.platform === 'darwin') {
         await setupMac();
     } else if (platform === 'win32' || platform === 'win') {
         await setupWin();
     }
 
+    await installsysroot();
+    
     await execAsync('gclient', 'sync', '--with_branch_heads');
     if (program.arch === 'ia32') {
         await execAsync('gn', 'gen', 'out/Default', '--args="chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""');
