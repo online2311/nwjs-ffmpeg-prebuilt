@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 as builder
+FROM node:12.22.12-buster as builder
 ENV TZ Asia/Shanghai
 RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime
 RUN apt-get -y update && apt-get install -y -q build-essential curl git lsb-base lsb-release sudo apt-utils python pkg-config tzdata
