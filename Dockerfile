@@ -22,6 +22,6 @@ RUN sed -i 's/"#assert(current_toolchain == default_toolchain)"/"assert(current_
 RUN gn gen out/Default --args='chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu="arm64" ffmpeg_branding="Chrome"'
 RUN autoninja -C out/Default/ libffmpeg.so
 
-FROM alpine:latestrnv
+FROM alpine:latest
 COPY --from=builder /home/chromium/build/chromium/src/out/Default .
 ENTRYPOINT ["/bin/bash"]
