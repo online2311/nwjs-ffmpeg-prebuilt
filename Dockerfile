@@ -1,7 +1,5 @@
-FROM debian:buster-slim as builder
-ENV TZ Asia/Shanghai
-RUN ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime
-RUN apt-get -y update && apt-get install -y -q build-essential curl git lsb-base lsb-release sudo apt-utils python pkg-config tzdata
+FROM debian:10.12 as builder
+RUN apt-get -y update && apt-get install -y -q build-essential curl git lsb-base lsb-release sudo apt-utils python pkg-config
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo bash - && sudo apt-get install -y nodejs
 # Don't build as root.
 RUN useradd chromium --shell /bin/bash --create-home && usermod -aG sudo chromium
@@ -21,8 +19,3 @@ RUN python /home/chromium/build/chromium/src/build/linux/sysroot_scripts/install
 RUN sed -i '/^assert/d' build/config/linux/atspi2/BUILD.gn && sed -i '/^assert/d' build/config/linux/atk/BUILD.gn
 RUN gn gen out/Default --args='chrome_pgo_phase=0 is_debug=false enable_nacl=false is_component_ffmpeg=true proprietary_codecs=true is_official_build=true target_cpu="arm64" ffmpeg_branding="Chrome"'
 RUN autoninja -C out/Default/ libffmpeg.so
-RUN libffmpeg=$(file out/Default/libffmpeg.so) && echo "$libffmpeg"
-
-FROM alpine:latest
-COPY --from=builder /home/chromium/build/chromium/src/out/Default/libffmpeg.so files/
-RUN apk add --update bash file && rm -rf /var/cache/apk/*
