@@ -1,4 +1,4 @@
-FROM debian:10.12 as builder
+FROM dockerhub.azk8s.cn/library/debian:10.12 as builder
 RUN apt-get -y update && apt-get install -y -q build-essential curl git lsb-base lsb-release sudo apt-utils python pkg-config
 RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo bash - && sudo apt-get install -y nodejs
 # Don't build as root.
